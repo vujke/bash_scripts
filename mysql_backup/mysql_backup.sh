@@ -6,7 +6,7 @@ MYSQL=/usr/bin/mysql
 MYSQLDUMP=/usr/bin/mysqldump
 MYSQL_HOST="localhost"
 MYSQL_USERNAME="vujke"
-MYSQL_PASSWORD="viz.plavo"
+MYSQL_PASSWORD=""
 # DATABASE_NAME=""
 
 BACKUP_DIR="$HOME/backup/mysql"
