@@ -27,6 +27,7 @@ LIST_OF_DATABASES=`$MYSQL --user=$MYSQL_USER -p$MYSQL_PASSWORD -e "SHOW DATABASE
 
 for DATABASE_NAME in $LIST_OF_DATABASES; do
   $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --databases $DATABASE_NAME --skip-lock-tables > ${BACKUP_DIR}/${DATABASE_NAME}_${DATE}.sql
+  # Compressing every database
   gzip -q $BACKUP_DIR/*
 done
 
