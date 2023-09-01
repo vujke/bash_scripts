@@ -1,9 +1,9 @@
 #! /bin/bash
 
-#: Title		: Backup all MySQL Databases
-#: Date			: 2014
-#: Author		: github.com/vujke
-#: Version		: 1.0
+#: Title		    : Backup all MySQL Databases
+#: Date			    : 2014
+#: Author		    : github.com/vujke
+#: Version		  : 2.0
 #: Description	: 
 
 DATE=$(date +"%d%m%Y%H%M")
@@ -16,6 +16,8 @@ MYSQL_PASSWORD=""
 BACKUP_DIR="$HOME/Downloads/mysqldump"
 DATABASE_DIR="$BACKUP_DIR/$DATABASE_NAME"
 SQL_FILE="$DATABASE_NAME"
+EMAIL="@gmail.com"
+TIME=$(date)
 
 # Check if database directory exist
 [ ! -d "$BACKUP_DIR" ]  && mkdir -p $BACKUP_DIR
@@ -23,7 +25,7 @@ SQL_FILE="$DATABASE_NAME"
 # List all databases
 # SHOW DATABASES is regular MySQL command that shows all databases
 # Command grep -Ev will NOT show defined database(s)
-LIST_OF_DATABASES=`$MYSQL --user=$MYSQL_USER -p$MYSQL_PASSWORD -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|sys|mysql)"`
+LIST_OF_DATABASES=`$MYSQL --user=$MYSQL_USER -p$MYSQL_PASSWORD -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|sys)"`
 
 for DATABASE_NAME in $LIST_OF_DATABASES; do
   $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --databases $DATABASE_NAME --skip-lock-tables > ${BACKUP_DIR}/${DATABASE_NAME}_${DATE}.sql
@@ -31,4 +33,11 @@ for DATABASE_NAME in $LIST_OF_DATABASES; do
   gzip -q $BACKUP_DIR/*
 done
 
-echo "${LIST_OF_DATABASES}" | wc -l
+#printf "Total number of backed up database(s): %s\n" "$(wc -l <<< "$LIST_OF_DATABASES")"
+
+for file in $BACKUP_DIR/*$DATE* ; do
+  [[ -f "${file}" ]] || continue
+    ATTACHMENT+=( "-a" "${file}" )
+done
+
+echo -e "Total number of backed up database(s):" $(wc -l <<< "$LIST_OF_DATABASES") \\n"${LIST_OF_DATABASES}" "\n\nTime: $TIME" "\n\nSee attachment" | mailx ${ATTACHMENT[@]} -s "MySQL back up at ${USER}@${HOSTNAME}" $EMAIL 
