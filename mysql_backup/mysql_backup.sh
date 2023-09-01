@@ -1,10 +1,10 @@
 #! /bin/bash
 
-#: Title		    : Backup all MySQL Databases
-#: Date			    : 2014
-#: Author		    : github.com/vujke
-#: Version		  : 2.0
-#: Description	: 
+#: Title          : Backup all MySQL Databases
+#: Date           : 2014
+#: Author         : github.com/vujke
+#: Version        : 2.0
+#: Description    : 
 
 DATE=$(date +"%d%m%Y%H%M")
 
