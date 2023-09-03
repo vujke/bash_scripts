@@ -33,8 +33,6 @@ for DATABASE_NAME in $LIST_OF_DATABASES; do
   gzip -q $BACKUP_DIR/*
 done
 
-#printf "Total number of backed up database(s): %s\n" "$(wc -l <<< "$LIST_OF_DATABASES")"
-
 for file in $BACKUP_DIR/*$DATE* ; do
   [[ -f "${file}" ]] || continue
     ATTACHMENT+=( "-a" "${file}" )
