@@ -11,12 +11,12 @@ DATE=$(date +"%d%m%Y%H%M")
 MYSQL=/usr/bin/mysql
 MYSQLDUMP=/usr/bin/mysqldump
 MYSQL_HOST="localhost"
-MYSQL_USERNAME="vujke"
-MYSQL_PASSWORD="Viz.plavo88"
+MYSQL_USERNAME=""
+MYSQL_PASSWORD=""
 BACKUP_DIR="$HOME/Downloads/mysqldump"
 DATABASE_DIR="$BACKUP_DIR/$DATABASE_NAME"
 SQL_FILE="$DATABASE_NAME"
-EMAIL="elvujke@gmail.com"
+EMAIL="@gmail.com"
 TIME=$(date)
 
 # Check if database directory exist
