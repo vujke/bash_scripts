@@ -5,6 +5,6 @@ alias yi="sudo yum install"
 alias yu="sudo yum update"
 
 # Functions
-fubction ipa() {
-192.168.1.$1
+function ipa() {
+ping -c4 192.168.1.$1
 }
