@@ -28,7 +28,7 @@ EMAIL="your_email@gmail.com"
 if [[ $NEW_IP_ADDR != $OLD_IP_ADDR ]]
 then
 # If it's different, an email will be sent.
-	echo -e "New IP Address on ${TIME} is:
+	echo -e "New IP Address created on ${TIME} is:
 	\n${NEW_IP_ADDR}
 	\n********
 	\nOld IP address was:
