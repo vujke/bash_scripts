@@ -4,7 +4,7 @@
 #: Date			: August 2023
 #: Author		: github.com/vujke
 #: Version		: 1.0
-#: Description		: Checking if public IP address has changed. If yes, an email wiil be sent.
+#: Description		: Checking if public IP address has changed. If yes, an email will be sent.
 
 # Other commands to check IP address from bash/command line:
 # curl ipinfo.io/ip
