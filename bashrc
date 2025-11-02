@@ -7,6 +7,10 @@ alias ping="ping -c4"
 alias pg="ping -c4 google.com" 
 
 # Functions
-function ping() {
+function pc() {
 ping -c4 192.168.1.$1
+}
+
+function sr() {
+sudo systemctl restart $1
 }
