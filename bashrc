@@ -1,8 +1,9 @@
 # Aliases
 alias sd="sudo shutdown -h now"
 alias rb="sudo reboot"
-alias yi="sudo yum install"
-alias yu="sudo yum update"
+alias di="sudo dnf install"
+alias diy="sudo dnf install -y"
+alias du="sudo dng update"
 alias ping="ping -c4"
 alias pg="ping -c4 google.com" 
 
