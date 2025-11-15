@@ -14,3 +14,11 @@ ping -c4 192.168.1.$1
 function sr() {
 sudo systemctl restart $1
 }
+
+function ss() {
+systemctl status $1
+}
+
+function sx() {
+sudo systemctl $1 $2
+}
