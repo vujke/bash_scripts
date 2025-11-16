@@ -5,7 +5,8 @@ alias di="sudo dnf install"
 alias diy="sudo dnf install -y"
 alias du="sudo dng update"
 alias ping="ping -c4"
-alias pg="ping -c4 google.com" 
+alias pg="ping -c4 google.com"
+alias sn="sudo nano"
 
 # Functions
 function pc() {
