@@ -22,19 +22,22 @@ IP_OUTPUT='ip_output.txt'
 # Checking old IP address stored in variable $IP_OUTPUT (ip_output.txt).
 OLD_IP_ADDR=$(head -n 1 $IP_OUTPUT)
 TIME=$(date)
-EMAIL="your_email@gmail.com"
+EMAIL="@gmail.com"
+DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{print $2}' /etc/os-release)
+DISTROVER=$(awk -F 'VERSION_ID=' '/^VERSION_ID=/{print $2}' /etc/os-release)
 
 # Checking if new IP address is different than old IP address that is stored in variable $IP_OUTPUT (ip_output.txt).
 if [[ $NEW_IP_ADDR != $OLD_IP_ADDR ]]
 then
 # If it's different, an email will be sent.
-	echo -e "New IP Address created on ${TIME} is:
+	echo -e "New IP Address changed on ${TIME} is:
 	\n${NEW_IP_ADDR}
 	\n********
 	\nOld IP address was:
-	\n${OLD_IP_ADDR}" | mailx -s "IP Address Has Changed" $EMAIL
+	\n${OLD_IP_ADDR}
+	\nSent from ${DISTRONAME} v${DISTROVER}" | mailx -s "IP Address Has Changed" $EMAIL
  	# If IP address has changed (different than old one), new IP address will be stored (overridden) in variable $IP_OUTPUT which is file ip_output.txt.
 	echo "${NEW_IP_ADDR}" &> $IP_OUTPUT
-# If it's not different, nothing will be done.
+	# If it's not different, nothing will be done.
 else :
 fi
