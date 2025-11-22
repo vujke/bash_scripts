@@ -34,7 +34,7 @@ then
 	echo -e "New IP Address changed on ${TIME} is:
 	\n${NEW_IP_ADDR}
 	\n********
-	\nOld IP address was:
+	\nPrevious IP address was:
 	\n${OLD_IP_ADDR}
 	\nSent from ${DISTRONAME} v${DISTROVER}, hostname: ${HOSTNAME}" | mailx -s "IP Address Has Changed" $EMAIL
  	# If IP address has changed (different than old one), new IP address will be stored (overridden) in variable $IP_OUTPUT which is file ip_output.txt.
