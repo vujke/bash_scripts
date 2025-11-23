@@ -22,7 +22,7 @@ IP_OUTPUT='ip_output.txt'
 # Checking old IP address stored in variable $IP_OUTPUT (ip_output.txt).
 OLD_IP_ADDR=$(head -n 1 $IP_OUTPUT)
 TIME=$(date)
-EMAIL="el.vujke@gmail.com"
+EMAIL="@gmail.com"
 DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
 DISTROVER=$(awk -F 'VERSION_ID=' '/^VERSION_ID=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
 #DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{print $2}' /etc/os-release)
