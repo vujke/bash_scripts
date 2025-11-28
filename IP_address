@@ -3,7 +3,7 @@
 #: Title		: Send new public IP address to email.
 #: Date			: August 2023
 #: Author		: github.com/vujke
-#: Version		: 2.0
+#: Version		: 3.0
 #: Description	: Checking if public IP address has changed. If yes, an email will be sent.
 
 # Other commands to check IP address from bash/command line:
@@ -14,7 +14,7 @@
 # wget -qO - myip.dnsomatic.com
 
 # Checking public IP address usig dig command.
-NEW_IP_ADDR=$(dig @resolver4.opendns.com myip.opendns.com +short)
+NEW_IP_ADDR=$(curl ipinfo.io/ip)
 # Define output file where IP address will be stored.
 IP_OUTPUT='ip_output.txt'
 # If file defined in variable $IP_OUTPUT doesn't exist, file will be created. Otherwise, nothing will be done.
@@ -25,23 +25,29 @@ TIME=$(date)
 EMAIL="@gmail.com"
 DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
 DISTROVER=$(awk -F 'VERSION_ID=' '/^VERSION_ID=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
+KERNEL_VER=$(hostnamectl | awk '/Kernel:/ {print $3}')
+ISA=$(hostnamectl | awk '/Architecture:/ {print $2}')
 #DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{print $2}' /etc/os-release)
 #DISTROVER=$(awk -F 'VERSION_ID=' '/^VERSION_ID=/{print $2}' /etc/os-release)
 HOSTNAME=$(cat /etc/hostname)
+#WIDTH_TBL=${#NEW_IP_ADDR}
+WIDTH_TBL=30
+BORDER_TBL="+$(printf '%0.s-' $(seq 1 $WIDTH_TBL))+"
 
 # Checking if new IP address is different than old IP address that is stored in variable $IP_OUTPUT (ip_output.txt).
 if [[ $NEW_IP_ADDR != $OLD_IP_ADDR ]]
 then
 # If it's different, an email will be sent.
-	echo -e "New IP Address has changed on ${TIME} is:
-	\n${NEW_IP_ADDR}
-	\n********
+	echo -e "IP Address has changed on ${TIME}. New IP address is:\n
+$BORDER_TBL
+ |   $NEW_IP_ADDR   |
+$BORDER_TBL
 	\nPrevious IP address was: $(if [ -z $OLD_IP_ADDR ]; then
-			echo 'N/A'
+			echo 'N/A.'
 		else
-			echo ${OLD_IP_ADDR}
+			echo ${OLD_IP_ADDR}.
 		fi)
-	\nSent from ${DISTRONAME} v${DISTROVER}, hostname: ${HOSTNAME}" | mailx -s "IP Address Has Changed" $EMAIL
+	\nSent from ${DISTRONAME} v${DISTROVER}; kernel v${KERNEL_VER} @ ${ISA}; hostname: ${HOSTNAME}." | mailx -s "IP Address Has Changed" $EMAIL
  	# If IP address has changed (different than old one), new IP address will be stored (overridden) in variable $IP_OUTPUT which is file ip_output.txt.
 	echo "${NEW_IP_ADDR}" &> $IP_OUTPUT
 	# If it's not different, nothing will be done.
