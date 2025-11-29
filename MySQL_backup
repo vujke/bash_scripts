@@ -15,7 +15,6 @@ MYSQL_USERNAME=""
 MYSQL_PASSWORD=""
 BACKUP_DIR="$HOME/mysqldump"
 DATABASE_DIR="$BACKUP_DIR/$DATABASE_NAME"
-SQL_FILE="$DATABASE_NAME"
 EMAIL="@gmail.com"
 TIME=$(date)
 
@@ -49,7 +48,7 @@ for file in $BACKUP_DIR/*$DATE* ; do
   ATTACHMENT+=( "-a" "${file}" )
 done
 
-echo -e "List of databases ($(wc -l <<< "$LIST_OF_DATABASES")):\n$(for LIST_OF_DATABASES in $LIST_OF_DATABASES; do
+echo -e "List of databases ($(wc -l <<< "$LIST_OF_DATABASES")):\n\n$(for LIST_OF_DATABASES in $LIST_OF_DATABASES; do
     printf "%d. %s\n" "$i" "$LIST_OF_DATABASES"
     ((i++))
 done)
