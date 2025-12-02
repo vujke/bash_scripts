@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#: Title		: Failed Login Notification.
+#: Date			: October 2014
+#: Author		: github.com/vujke
+#: Version		: 3.0
+#: Description	: Send email if an unattended login occured.
+
 LOG="/var/log/secure"
 EMAIL="@gmail.com"
 HOSTNAME=$(hostname)
