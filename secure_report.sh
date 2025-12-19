@@ -1,7 +1,7 @@
 #!/bin/bash
 
 LOG="/var/log/secure"
-EMAIL="elvujke@gmail.com"
+EMAIL="@gmail.com"
 HOSTNAME=$(hostname)
 SUBJECT="Failed SSH Login Attempts on $HOSTNAME"
 DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
