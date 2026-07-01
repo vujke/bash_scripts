@@ -1,55 +1,68 @@
-#! /bin/bash
+#!/bin/bash
 
-#: Title		    : Backup all MySQL Databases
-#: Date			    : 2014
-#: Author	    	: github.com/vujke
-#: Version		  : 2.0
-#: Description	: 
+#: Title           : Backup all MySQL Databases
+#: Date            : 2014 (Updated 2026)
+#: Author          : github.com/vujke
+#: Version         : 2.2
+#: Description     : Backs up all MySQL databases, compresses them, prunes old ones, and emails them.
 
 DATE=$(date +"%d%m%Y%H%M")
 
 MYSQL=/usr/bin/mysql
 MYSQLDUMP=/usr/bin/mysqldump
 MYSQL_HOST="localhost"
-MYSQL_USERNAME=""
-MYSQL_PASSWORD=""
+MYSQL_USERNAME="vujke"
+MYSQL_PASSWORD="Viz.plavo88"
 BACKUP_DIR="$HOME/mysqldump"
-DATABASE_DIR="$BACKUP_DIR/$DATABASE_NAME"
-EMAIL="@gmail.com"
+EMAIL="elvujke@gmail.com" # Replace with your actual email
 TIME=$(date)
 
-DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
+# System info gathering
+DISTRONAME=$(awk -F 'NAME=' '/^NAME=/{gsub(/"/,"",$2); print $2}' /etc/os-release | head -n1)
 DISTROVER=$(awk -F 'VERSION_ID=' '/^VERSION_ID=/{gsub(/"/,"",$2); print $2}' /etc/os-release)
 KERNEL_VER=$(hostnamectl | awk '/Kernel:/ {print $3}')
 ISA=$(hostnamectl | awk '/Architecture:/ {print $2}')
 HOSTNAME=$(hostname)
 
-i=1
+# Check if database directory exists
+[ ! -d "$BACKUP_DIR" ] && mkdir -p "$BACKUP_DIR"
 
-# Check if database directory exist
-[ ! -d "$BACKUP_DIR" ]  && mkdir -p $BACKUP_DIR
-
-# Delete databases older than 15 days
-find $BACKUP_DIR/$DATABASE_NAME* -mtime +15 -exec rm {} \;
+# Delete backups older than 15 days safely
+find "$BACKUP_DIR" -type f -name "*.sql.gz" -mtime +15 -exec rm {} \;
 
 # List all databases
-# SHOW DATABASES is regular MySQL command that shows all databases
-# Command grep -Ev will NOT show defined database(s)
-LIST_OF_DATABASES=`$MYSQL --user=$MYSQL_USER -p$MYSQL_PASSWORD -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|sys|mysql)"`
+LIST_OF_DATABASES=$($MYSQL --host=$MYSQL_HOST --user=$MYSQL_USERNAME -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|sys|mysql|zabbix)")
 
+# Loop through and dump databases
 for DATABASE_NAME in $LIST_OF_DATABASES; do
-  $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --databases $DATABASE_NAME --skip-lock-tables > ${BACKUP_DIR}/${DATABASE_NAME}_${DATE}.sql
-  # Compress every database
-  gzip -q $BACKUP_DIR/*
+    FILE_PATH="${BACKUP_DIR}/${DATABASE_NAME}_${DATE}.sql"
+    
+    # Dump the database
+    $MYSQLDUMP --host=$MYSQL_HOST --force --opt --user=$MYSQL_USERNAME -p"$MYSQL_PASSWORD" --databases "$DATABASE_NAME" --skip-lock-tables > "$FILE_PATH"
+    
+    # Compress ONLY this specific database backup immediately
+    gzip -q "$FILE_PATH"
 done
 
-for file in $BACKUP_DIR/*$DATE* ; do
-  [[ -f "${file}" ]] || continue
-  ATTACHMENT+=( "-a" "${file}" )
+# Build the attachments array for files created in this specific run
+ATTACHMENT=()
+for file in "$BACKUP_DIR"/*"$DATE"*.sql.gz; do
+    [[ -f "${file}" ]] || continue
+    ATTACHMENT+=("-a" "${file}")
 done
 
-echo -e "List of databases ($(wc -l <<< "$LIST_OF_DATABASES")):\n\n$(for LIST_OF_DATABASES in $LIST_OF_DATABASES; do
-    printf "%d. %s\n" "$i" "$LIST_OF_DATABASES"
+i=1
+DB_LIST_BODY=""
+
+for db in $LIST_OF_DATABASES; do
+    DB_LIST_BODY+="$i. $db"$'\n'
     ((i++))
-done)
-\nSent on $TIME from ${DISTRONAME} v${DISTROVER}; kernel v${KERNEL_VER} @ ${ISA}; hostname: ${HOSTNAME}." "\n\nSee attachment below:" | mailx ${ATTACHMENT[@]} -s "MySQL back up at @${HOSTNAME}" $EMAIL 
+done
+
+# Construct the email body
+EMAIL_BODY="List of databases ($(echo "$LIST_OF_DATABASES" | wc -l)):\n\n${DB_LIST_BODY}\n"
+EMAIL_BODY+="Sent on $TIME from ${DISTRONAME} v${DISTROVER}; kernel v${KERNEL_VER} @ ${ISA}; hostname: ${HOSTNAME}.\n\n"
+EMAIL_BODY+="See attachment below:"
+
+# Send the email
+echo -e "$EMAIL_BODY" | s-nail "${ATTACHMENT[@]}" -s "MySQL backup at @${HOSTNAME}" "$EMAIL"
