@@ -12,9 +12,9 @@ MYSQL=/usr/bin/mysql
 MYSQLDUMP=/usr/bin/mysqldump
 MYSQL_HOST="localhost"
 MYSQL_USERNAME="vujke"
-MYSQL_PASSWORD="Viz.plavo88"
+MYSQL_PASSWORD=""
 BACKUP_DIR="$HOME/mysqldump"
-EMAIL="elvujke@gmail.com" # Replace with your actual email
+EMAIL="@gmail.com" # Replace with your actual email
 TIME=$(date)
 
 # System info gathering
