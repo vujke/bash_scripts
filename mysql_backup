@@ -51,6 +51,7 @@ for file in "$BACKUP_DIR"/*"$DATE"*.sql.gz; do
     ATTACHMENT+=("-a" "${file}")
 done
 
+# Listed order
 i=1
 DB_LIST_BODY=""
 
